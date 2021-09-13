@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "ImageResizer.Client": {
+      "commandName": "Project"
+    }
+  }
+}
