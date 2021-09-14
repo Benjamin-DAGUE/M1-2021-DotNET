@@ -6,6 +6,22 @@ namespace ImageResizer.Client
 {
     class Program
     {
+        #region Fields
+
+        /// <summary>
+        ///     Chemine du dossier à écouter.
+        /// </summary>
+        private static string _InputDirectory;
+
+        /// <summary>
+        ///     Chemin du dossier dans lequel créer l'image traitée.
+        /// </summary>
+        private static string _OutputDirectory;
+
+        #endregion
+
+        #region Methods
+
         static void Main(string[] args)
         {
             try
@@ -15,15 +31,22 @@ namespace ImageResizer.Client
 #if DEBUG
                     args = new string[]
                     {
-                        @"C:\Users\bdague\Desktop\source.png",
-                        @"C:\Users\bdague\Desktop\copy.png"
+                        @"C:\Users\bdague\Desktop\Dir\Source",
+                        @"C:\Users\bdague\Desktop\Dir\Trt"
                     };
 #else
                     throw new Exception("Vous devez spécifier en premier argument le chemin de l'image d'origine et en deuxième le chemin de la copie.");
 #endif
                 }
 
-                MakeImageSquare(args[0], args[1]);
+                _InputDirectory = args[0];
+                _OutputDirectory = args[1];
+
+                using FileSystemWatcher watcher = new FileSystemWatcher(_InputDirectory);
+                watcher.Created += Watcher_Created;
+                watcher.EnableRaisingEvents = true;
+
+                Console.ReadLine();
             }
             catch (Exception ex)
             {
@@ -36,10 +59,70 @@ namespace ImageResizer.Client
             }
         }
 
+        private static void Watcher_Created(object sender, FileSystemEventArgs e)
+        {
+            Console.WriteLine($"Nouveau fichier, ouverture de : {e.FullPath}");
+            
+            if (TryOpenFile(e.FullPath))
+            {
+                string outputPath = e.FullPath.Replace(_InputDirectory, _OutputDirectory);
+                Console.WriteLine($"Traitement de : {e.FullPath}");
+
+                try
+                {
+                    if (File.Exists(outputPath))
+                    {
+                        Console.WriteLine($"Le fichier existe déjà et va être supprimé : {outputPath}");
+                        File.Delete(outputPath);
+                    }
+
+                    MakeImageSquare(e.FullPath, outputPath);
+                    Console.WriteLine($"Traitement terminé : {e.FullPath}");
+
+                    File.Delete(e.FullPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur de traitement : {e.FullPath}");
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Impossible d'ouvrir le fichier : {e.FullPath}");
+            }
+        }
+
+        private static bool TryOpenFile(string filePath)
+        {
+            bool isFileOpen = false;
+
+            do
+            {
+                try
+                {
+                    using FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.None);
+                    isFileOpen = true;
+                }
+                catch (IOException ex)
+                {
+                    if (File.Exists(filePath) == false)
+                    {
+                        return false;   //Si le fichier n'existe plus, on arrête l'attente.
+                    }
+                    System.Threading.Thread.Sleep(100);
+                }
+                catch (Exception ex)
+                {
+                    return false; //Si on a une autre erreur qu'une erreur de type IOException.
+                }
+            } while (isFileOpen == false);
+
+            return isFileOpen;
+        }
+
         private static void MakeImageSquare(string inputPath, string outputPath)
         {
-            Console.WriteLine($"Traitement de [{inputPath}] vers [{outputPath}]");
-
             if (string.IsNullOrWhiteSpace(inputPath) || File.Exists(inputPath) == false)
             {
                 throw new Exception("Le fichier à traiter n'existe pas.");
@@ -81,5 +164,7 @@ namespace ImageResizer.Client
                 throw new Exception("Erreur lors du traitement de l'image.", ex);
             }
         }
+
+        #endregion
     }
 }
