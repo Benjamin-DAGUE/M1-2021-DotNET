@@ -9,8 +9,6 @@ namespace CoursLinq
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
             List<Person> people = new List<Person>()
             {
                 new Person()
@@ -70,29 +68,78 @@ namespace CoursLinq
                 .ToList()                                       //On exécute la requête en créant une liste du réslutat.
                 .ForEach(p => Console.WriteLine(p.FullName));   //Pour chaque personne dans la liste du résultat, on affiche son nom et son prénom.
 
+            Console.WriteLine();
+            Console.WriteLine();
             Console.WriteLine("2 - Afficher les personnes nées en janvier et en février");
+            people
+                .Where(p => new[] { 1, 2, 6 }.Contains(p.Birthdate.Month))
+                //.Where(p => p.Birthdate.Month <= 2)
+                .Where(p => p.Birthdate.Month <= 3)
+                .ToList()
+                .ForEach(p => Console.WriteLine(p.FullName));
 
+            Console.WriteLine();
+            Console.WriteLine();
             Console.WriteLine("3 - Afficher les personnes nées un samedi ou un dimanche");
+            people
+                .Where(p => new[] { DayOfWeek.Saturday, DayOfWeek.Sunday }.Contains(p.Birthdate.DayOfWeek))
+                //.Where(p => p.Birthdate.DayOfWeek == DayOfWeek.Saturday || p.Birthdate.DayOfWeek == DayOfWeek.Sunday)
+                .ToList()
+                .ForEach(p => Console.WriteLine(p.FullName));
 
+            Console.WriteLine();
+            Console.WriteLine();
             Console.WriteLine("4 - Afficher les personnes pour lesquelles le prénom a plus de 7 caractères");
+            people
+                .Where(p => p.FirstName.Length > 7)
+                .ToList()
+                .ForEach(p => Console.WriteLine(p.FullName));
 
+            Console.WriteLine();
+            Console.WriteLine();
             Console.WriteLine("5 - Afficher les personnes nées en janvier et en février et pour lesquelles le prénom a plus de 7 caractères");
+            people
+                .Where(p => p.Birthdate.Month <= 2 && p.FirstName.Length > 7)
+                //.Where(p => p.Birthdate.Month <= 2)
+                //.Where(p => p.FirstName.Length > 7)
+                .ToList()
+                .ForEach(p => Console.WriteLine(p.FullName));
 
+            Console.WriteLine();
+            Console.WriteLine();
             Console.WriteLine("6 - Calculer la moyenne d'age des personnes");
+            double averageAge = people.Average(p => p.Birthdate.CalculateAge());
+            Console.WriteLine("L'âge moyen est : " + averageAge);
 
+            Console.WriteLine();
+            Console.WriteLine();
             Console.WriteLine("7 - Afficher les personnes de la plus ancienne à la plus jeune");
+            people
+                .OrderBy(p => p.Birthdate)
+                .ToList()
+                .ForEach(p => Console.WriteLine(p.FullName));
 
+            Console.WriteLine();
+            Console.WriteLine();
             Console.WriteLine("8 - Afficher les personnes dont l'age est supérieur à la moyenne d'âge");
+            people
+                //Cette méthode calcul la moyenne d'âge plusieurs fois (une foi par personne présente dans la liste)
+                //.Where(p => p.Birthdate.CalculateAge() > people.Average(p => p.Birthdate.CalculateAge()))
+                .Where(p => p.Birthdate.CalculateAge() > averageAge)
+                .ToList()
+                .ForEach(p => Console.WriteLine(p.FullName));
 
+            Console.WriteLine();
+            Console.WriteLine();
             Console.WriteLine("9 - Saisisez une chaîne et afficher les personnes dont le nom contient la recherche");
+            Console.Write("Votre recherche : ");
+            string search = Console.ReadLine();
+            people
+                .Where(p => p.FullName.ToLower().Contains(search?.ToLower()))
+                .ToList()
+                .ForEach(p => Console.WriteLine(p.FullName));
 
-
+            Console.ReadLine();
         }
-
-        private static bool LowerThan2000Y(Person p)
-        {
-            return p.Birthdate.Year < 2000;
-        }
-
     }
 }
