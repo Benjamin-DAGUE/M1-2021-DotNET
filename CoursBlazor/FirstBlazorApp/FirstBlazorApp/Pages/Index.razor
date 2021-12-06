@@ -1,5 +1,57 @@
-﻿@page "/"
+﻿@* 
+    @page permet de définir une route d'accès à une page.
+    Une page peut avoir plusieurs route.
+    Une page est avant tout un composant et peut être utilisée dans une autre page (ci-dessous, utilisation du composant <IpPage>).
+
+*@
+@page "/"
+
+@*
+    Les projets Asp.NET Core utilisent un système d'injection de dépendances.
+    
+    @inject : permet de déclarer une variable dont l'instance sera passée par le moteur d'injection de dépendances.
+    NavigationManager : Service de navigation, permet de connaître l'URL de la page actuelle et de procéder à une navigation.
+    INotificationService : Service d'affichage d'une popup de notification (fait partie de Blazorise).
+*@
+@inject NavigationManager NavigationManager;
+@inject INotificationService NotificationService;
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+@*<Container>, <Row>, <Column>, <TextEdit> et <Button> sont des composants de Blazorise*@
+<Container>
+    <Row>
+        <Column ColumnSize="ColumnSize.Is12">
+            <h1>Bienvenue</h1>
+        </Column>
+    </Row>
+    <Row>
+        <Column ColumnSize="ColumnSize.Is8">
+            <TextEdit Placeholder="Veuillez saisir une adresse IPV4" @bind-Text="@IpAddress" />
+        </Column>
+        <Column ColumnSize="ColumnSize.Is4">
+            <Button Color="Color.Primary" Clicked="@CheckIpAddress">Check</Button>
+        </Column>
+    </Row>
+    <Row>
+        <Column ColumnSize="ColumnSize.Is12">
+            @*Il est possible d'utiliser une page en tant que composant.*@
+            <IpPage IpAddress=@IpAddress/>
+        </Column>
+    </Row>
+    <Row>
+        <Column ColumnSize="ColumnSize.Is12">
+            @*
+                @bind-<parametername> permet de définir une liaison à double sens.
+                Cela signifie que la variable randomNumber sera modifiée automatiquement lorsque le paramètre RandomNumber du composant Random sera mise à jour par le composant.
+            *@
+            <Random @bind-RandomNumber=@randomNumber/>
+            <p style="color:red">@randomNumber</p>
+        </Column>
+    </Row>
+</Container>
+
+
+@code {
+    private int randomNumber = 0;
+}

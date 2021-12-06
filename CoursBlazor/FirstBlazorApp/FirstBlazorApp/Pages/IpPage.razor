@@ -1,0 +1,15 @@
+﻿@*
+    Il est possible de définir un paramètre de route avec {}
+    Il est possible de contraindre le type {Type:ParameterName} (cf documentation officielle)
+*@
+@page "/ip/{IpAddress}"
+@using System.Net
+
+@if(_IsIpAddressValid == false)
+{
+    <p>Désolé, "@IpAddress" n'est pas une adresse valide.</p>
+}
+else
+{
+    <p>@IpAddress</p>
+}
