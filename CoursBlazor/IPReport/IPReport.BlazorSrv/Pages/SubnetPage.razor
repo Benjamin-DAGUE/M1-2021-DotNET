@@ -2,14 +2,83 @@
 
 <PageTitle>IP Report - @SubnetToCheck</PageTitle>
 
-@if (IsSubnetValid.HasValue)
-{
-    @if (IsSubnetValid.Value == false)
+<Container Fluid=true>
+
+    @if (IsSubnetValid.HasValue)
     {
-        <p>Le sous-réseau "@SubnetToCheck" n'est pas valide.</p>
+        <Alert Color="@GetAlertColor()" Visible Margin=Margin.Is2>
+            <Heading Size=HeadingSize.Is1>
+                @SubnetToCheck
+            </Heading>
+            <AlertMessage>
+                @GetAlertMessage()
+            </AlertMessage>
+            <Paragraph>
+                <Checker />
+            </Paragraph>
+        </Alert>
+        @if (IPs != null && IPs.Count > 0)
+        {
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderCell>IP</TableHeaderCell>
+                        <TableHeaderCell>Nombre de rapports</TableHeaderCell>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    @foreach (IP ip in IPs.OrderBy(i => i.IPNumberInSubnet))
+                    {
+                        <TableRow @key="@ip">
+                            <TableRowHeader><a href=@($"/ip/{HttpUtility.UrlEncode(ip.IPAddress?.Replace(".", "_"))}")>@ip.IPAddress</a></TableRowHeader>
+                            <TableRowCell>
+                                <Text>@ip.Reports.Count</Text>
+                            </TableRowCell>
+                        </TableRow>
+                    }
+                </TableBody>
+            </Table>
+        }
     }
     else
     {
-        <p>Le sous-réseau "@SubnetToCheck" est valide.</p>
+        <p>Chargement...</p>
     }
+
+</Container>
+
+@code {
+
+    private Color GetAlertColor()
+    {
+        Color result = Color.Warning;
+
+        if (IsSubnetValid == true && IPs?.Count > 0)
+        {
+            result = Color.Danger;
+        }
+        else if (IsSubnetValid == true && IPs?.Count == 0)
+        {
+            result = Color.Success;
+        }
+
+        return result;
+    }
+
+    private string GetAlertMessage()
+    {
+        string result = $"Le sous-réseau \"{SubnetToCheck}\" n'est pas un sous-réseau valide.";
+
+        if (IsSubnetValid == true && IPs?.Count > 0)
+        {
+            result = $"Le sous-réseau \"{SubnetToCheck}\" contient {IPs.Count} adresse(s) avec au moins un rapport.";
+        }
+        else if (IsSubnetValid == true && IPs?.Count == 0)
+        {
+            result = $"Le sous-réseau \"{SubnetToCheck}\" ne contient aucune adresse IP avec au moins un rapport.";
+        }
+
+        return result;
+    }
+
 }
