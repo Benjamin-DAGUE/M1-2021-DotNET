@@ -6,52 +6,22 @@
 
     @if (IsIPValid.HasValue)
     {
-        @if (IsIPValid.Value == false)
+        <Alert Color="@GetAlertColor()" Visible Margin=Margin.Is2>
+            <Heading Size=HeadingSize.Is1>
+                @IPToCheck
+            </Heading>
+            <AlertMessage>
+                @GetAlertMessage()
+            </AlertMessage>
+            <Paragraph>
+                <Checker />
+            </Paragraph>
+        </Alert>
+        @if (Ip != null)
         {
-            <Alert Color="Color.Warning" Visible Margin=Margin.Is2>
-                <Heading Size=HeadingSize.Is1>
-                    @IPToCheck
-                </Heading>
-                <AlertMessage>
-                    L'adresse "@IPToCheck" n'est pas une adresse IP valide.
-                </AlertMessage>
-                <Paragraph>
-                    <Checker />
-                </Paragraph>
-            </Alert>
+            <LastReportsList Ip=@Ip FixedHeader=false ItemsCountChanged=@((count) => ItemsCount = count)/>
         }
-        else
-        {
-            @if (Ip != null)
-            {
-                <Alert Color="Color.Danger" Visible Margin=Margin.Is2>
-                    <Heading Size=HeadingSize.Is1>
-                        @IPToCheck
-                    </Heading>
-                    <AlertMessage>
-                        L'adresse "@IPToCheck" a fait l'objet de @ItemsCount rapport d'abus.
-                    </AlertMessage>
-                    <Paragraph>
-                        <Checker />
-                    </Paragraph>
-                </Alert>
-                <LastReportsList Ip=@Ip FixedHeader=false ItemsCountChanged=@((count) => ItemsCount = count)/>
-            }
-            else
-            {
-                <Alert Color="Color.Success" Visible Margin=Margin.Is2>
-                    <Heading Size=HeadingSize.Is1>
-                        @IPToCheck
-                    </Heading>
-                    <AlertMessage>
-                        L'adresse "@IPToCheck" n'est pas présente dans notre base de données.
-                    </AlertMessage>
-                    <Paragraph>
-                        <Checker />
-                    </Paragraph>
-                </Alert>
-            }
-        }
+
     }
     else
     {
@@ -61,3 +31,38 @@
 
 </Container>
 
+@code {
+
+    private Color GetAlertColor()
+    {
+        Color result = Color.Warning;
+
+        if (IsIPValid == true && Ip != null)
+        {
+            result = Color.Danger;
+        }
+        else if (IsIPValid == true && Ip == null)
+        {
+            result = Color.Success;
+        }
+
+        return result;
+    }
+
+    private string GetAlertMessage()
+    {
+        string result = $"L'adresse \"{IPToCheck}\" n'est pas une adresse IP valide.";
+
+        if (IsIPValid == true && Ip != null)
+        {
+            result = $"L'adresse \"{IPToCheck}\" a fait l'objet de {ItemsCount} rapport d'abus.";
+        }
+        else if (IsIPValid == true && Ip == null)
+        {
+            result = $"L'adresse \"{IPToCheck}\" n'est pas présente dans notre base de données.";
+        }
+
+        return result;
+    }
+
+}
