@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPReport.BlazorSrv", "IPReport.BlazorSrv\IPReport.BlazorSrv.csproj", "{F625FC8F-59EF-45F6-8052-A89BCBAB518D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPReport.Data", "IPReport.Data\IPReport.Data.csproj", "{A845B5B4-A79F-452E-B8A3-6D85F8F40BF2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F625FC8F-59EF-45F6-8052-A89BCBAB518D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F625FC8F-59EF-45F6-8052-A89BCBAB518D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F625FC8F-59EF-45F6-8052-A89BCBAB518D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F625FC8F-59EF-45F6-8052-A89BCBAB518D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A845B5B4-A79F-452E-B8A3-6D85F8F40BF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A845B5B4-A79F-452E-B8A3-6D85F8F40BF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A845B5B4-A79F-452E-B8A3-6D85F8F40BF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A845B5B4-A79F-452E-B8A3-6D85F8F40BF2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C185FC01-F4E4-4285-B330-3BA084D40D06}
+	EndGlobalSection
+EndGlobal

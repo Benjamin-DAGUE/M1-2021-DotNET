@@ -1,0 +1,43 @@
+﻿@if (Reports != null)
+{
+    <Table FixedHeader=@FixedHeader FixedHeaderTableHeight="300px">
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell>Date et heure</TableHeaderCell>
+                <TableHeaderCell>IP</TableHeaderCell>
+                <TableHeaderCell>Subnet</TableHeaderCell>
+                <TableHeaderCell>Catégories</TableHeaderCell>
+                <TableHeaderCell>Commentaire</TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach (Report report in Reports.OrderByDescending(r => r.DateTime))
+            {
+                <TableRow @key="@report">
+                    <TableRowHeader>@report.DateTime</TableRowHeader>
+                    <TableRowCell>
+                        <a href=@($"/ip/{HttpUtility.UrlEncode(report.IP.IPAddress?.Replace(".", "_"))}")>@report.IP.IPAddress</a>
+                    </TableRowCell>
+                    <TableRowCell>
+                        <a href=@($"/subnet/{HttpUtility.UrlEncode(report.IP.IPSubnet?.Replace(".", "_"))}")>@report.IP.IPSubnet</a>
+                    </TableRowCell>
+                    <TableRowCell>
+                        @foreach (Category category in report.Categories.OrderBy(c => c.Name))
+                        {
+                            <Badge @key=@category Color=Color.Primary Margin=Margin.Is1.FromRight.FromLeft>
+                                @category.Name  
+                            </Badge>
+                        }
+                    </TableRowCell>
+                    <TableRowCell>
+                        <Text>@report.Comment</Text>
+                    </TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+}
+else
+{
+    <p>Chargement...</p>
+}

@@ -1,0 +1,63 @@
+﻿@page "/ip/{IPToCheck?}"
+
+<PageTitle>IP Report - @IPToCheck</PageTitle>
+
+<Container Fluid=true>
+
+    @if (IsIPValid.HasValue)
+    {
+        @if (IsIPValid.Value == false)
+        {
+            <Alert Color="Color.Warning" Visible Margin=Margin.Is2>
+                <Heading Size=HeadingSize.Is1>
+                    @IPToCheck
+                </Heading>
+                <AlertMessage>
+                    L'adresse "@IPToCheck" n'est pas une adresse IP valide.
+                </AlertMessage>
+                <Paragraph>
+                    <Checker />
+                </Paragraph>
+            </Alert>
+        }
+        else
+        {
+            @if (Ip != null)
+            {
+                <Alert Color="Color.Danger" Visible Margin=Margin.Is2>
+                    <Heading Size=HeadingSize.Is1>
+                        @IPToCheck
+                    </Heading>
+                    <AlertMessage>
+                        L'adresse "@IPToCheck" a fait l'objet de @ItemsCount rapport d'abus.
+                    </AlertMessage>
+                    <Paragraph>
+                        <Checker />
+                    </Paragraph>
+                </Alert>
+                <LastReportsList Ip=@Ip FixedHeader=false ItemsCountChanged=@((count) => ItemsCount = count)/>
+            }
+            else
+            {
+                <Alert Color="Color.Success" Visible Margin=Margin.Is2>
+                    <Heading Size=HeadingSize.Is1>
+                        @IPToCheck
+                    </Heading>
+                    <AlertMessage>
+                        L'adresse "@IPToCheck" n'est pas présente dans notre base de données.
+                    </AlertMessage>
+                    <Paragraph>
+                        <Checker />
+                    </Paragraph>
+                </Alert>
+            }
+        }
+    }
+    else
+    {
+        <p>Chargement...</p>
+
+    }
+
+</Container>
+

@@ -1,0 +1,44 @@
+﻿@page "/"
+
+<PageTitle>IP Report</PageTitle>
+
+<Jumbotron Background="Background.Light" Margin="Margin.Is4.FromBottom">
+    <JumbotronTitle Size="JumbotronTitleSize.Is4">
+        <Icon Name="@("fa-network-wired")" IconSize="IconSize.Large" /> Bienvenue sur IP Report !
+    </JumbotronTitle>
+    <JumbotronSubtitle>
+        Construisons un monde meilleur ensemble...
+    </JumbotronSubtitle>
+    <Divider></Divider>
+    <Paragraph>
+        IP Report est une base de données communautaire de rapport d'abus pour les adresses IP V4.
+        Cet outil est fortement inspiré de <a href="https://www.abuseipdb.com/">AbuseIPDB</a>.
+    </Paragraph>
+</Jumbotron>
+
+<Container Fluid=true>
+
+    <Row>
+        <Heading Size="HeadingSize.Is2">Vérifier une adresse</Heading>
+        <Text>Une adresse IP inconnue a été détectée sur votre réseau ? Vous souhaitez vérifier s'il existe des rapports ?</Text>
+
+    </Row>
+
+    <Checker/>
+
+    <Row>
+        <Heading Size="HeadingSize.Is2">Faire un rapport d'abus</Heading>
+        <Text>Vous avez remarqué une tentative d'intrusion ? Un robot scan votre réseau ?</Text>
+    </Row>
+    <Row>
+        <Column ColumnSize="ColumnSize.Is12.OnTablet.Is4.OnDesktop.Is12.OnMobile">
+            <Button Color=Color.Primary Block=true Type="ButtonType.Link" To="/report">Déclarer un rapport</Button>
+        </Column>
+    </Row>
+
+    <Row>
+        <Heading Size="HeadingSize.Is2">Rapports récents</Heading>
+        <LastReportsList FixedHeader=true/>
+    </Row>
+
+</Container>

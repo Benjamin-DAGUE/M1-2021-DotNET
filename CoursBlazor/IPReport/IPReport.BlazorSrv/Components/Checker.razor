@@ -1,0 +1,11 @@
+﻿<Row Gutter="(0, 0)">
+    <Column ColumnSize="ColumnSize.Is12.OnTablet.Is4.OnDesktop.Is12.OnMobile">
+        @*La valeur saisie est récupérée via le callback TextChanged*@
+        <TextEdit Placeholder="Saisir une adresse IPV4 a.b.c.d ou un subnet a.b.c.d/24" TextChanged=IpToCheckChanged/>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is12.OnTablet.Is2.OnDesktop.Is12.OnMobile" >
+        @*Le bouton est désactivé si la saisie est invalide*@
+        @*Si la saisie est un sous-réseau (termine par /24), le lien redirige vers la page corresponsante (/subnet/)*@
+        <Button Color=Color.Primary Block=true Type="ButtonType.Link" Disabled=@(IsValid == false) To="@($"/{(IpToCheck?.EndsWith("/24") == true ? "subnet" : "ip")}/{System.Web.HttpUtility.UrlEncode(IpToCheck)}")">Vérifier</Button>
+    </Column>
+</Row>

@@ -1,0 +1,62 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>IP Report</PageTitle>
+
+<Layout Sider="true">
+    <LayoutSider>
+        <LayoutSiderContent>
+            <Bar Mode="BarMode.VerticalInline"
+                 CollapseMode="BarCollapseMode.Small"
+                 Breakpoint="Breakpoint.Desktop"
+                 Background="Background.Light"
+                 ThemeContrast="ThemeContrast.Light">
+                <BarToggler />
+                <BarBrand>
+                    <BarItem>
+                        <BarLink To="/">
+                            <BarIcon IconName="@("fa-network-wired")" />
+                            IP Reporter
+                        </BarLink>
+
+                    </BarItem>
+                </BarBrand>
+                <BarMenu>
+                    <BarStart>
+                        <BarItem>
+                            <BarLink To="/">
+                                <BarIcon IconName="IconName.Home" />
+                                Accueil
+                            </BarLink>
+                        </BarItem>
+                        <BarItem>
+                            <BarLink To="/report">
+                                <BarIcon IconName="@("fa-user-secret")" />
+                                Rapport
+                            </BarLink>
+                        </BarItem>
+                        <BarItem>
+                            <BarLink To="/statistics">
+                                <BarIcon IconName="IconName.ChartPie" />
+                                Statistiques
+                            </BarLink>
+                        </BarItem>
+                    </BarStart>
+                    <BarEnd>
+                        <BarItem>
+                            <BarLink To="/about">
+                                <BarIcon IconName="IconName.QuestionCircle" />
+                                A propos
+                            </BarLink>
+                        </BarItem>
+                    </BarEnd>
+                </BarMenu>
+            </Bar>
+        </LayoutSiderContent>
+    </LayoutSider>
+    <Layout>
+        <LayoutContent>
+            @Body
+        </LayoutContent>
+    </Layout>
+</Layout>
+

@@ -1,0 +1,15 @@
+﻿@page "/subnet/{SubnetToCheck?}"
+
+<PageTitle>IP Report - @SubnetToCheck</PageTitle>
+
+@if (IsSubnetValid.HasValue)
+{
+    @if (IsSubnetValid.Value == false)
+    {
+        <p>Le sous-réseau "@SubnetToCheck" n'est pas valide.</p>
+    }
+    else
+    {
+        <p>Le sous-réseau "@SubnetToCheck" est valide.</p>
+    }
+}
