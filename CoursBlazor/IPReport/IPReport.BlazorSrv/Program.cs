@@ -36,131 +36,109 @@ if (!app.Environment.IsDevelopment())
 }
 else
 {
-    #region Fake data
-    using (IServiceScope scope = app.Services.CreateScope())
+    bool generateFakeData = true;
+
+    if (generateFakeData == true)
     {
-        IPReportContext context = scope.ServiceProvider.GetService<IPReportContext>() ?? throw new Exception($"Impossible d'initialiser le service {nameof(IPReportContext)}");
+        #region Fake data
 
-        context.Database.EnsureDeleted();
-        context.Database.EnsureCreated();
+        Random rnd = new Random();
 
-        Category hackingCategory = new Category()
+        using (IServiceScope scope = app.Services.CreateScope())
         {
-            Name = "Hacking"
-        };
-        Category bruteCategory = new Category()
-        {
-            Name = "Brute force"
-        };
-        Category ddosCategory = new Category()
-        {
-            Name = "DDoS"
-        };
-        Category portScanningCategory = new Category()
-        {
-            Name = "Port scanning"
-        };
-        Category botCategory = new Category()
-        {
-            Name = "Bot"
-        };
-        Category otherCategory = new Category()
-        {
-            Name = "Other"
-        };
+            IPReportContext context = scope.ServiceProvider.GetService<IPReportContext>() ?? throw new Exception($"Impossible d'initialiser le service {nameof(IPReportContext)}");
 
-        context.Categories.Add(hackingCategory);
-        context.Categories.Add(bruteCategory);
-        context.Categories.Add(ddosCategory);
-        context.Categories.Add(portScanningCategory);
-        context.Categories.Add(botCategory);
-        context.Categories.Add(otherCategory);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
 
-        context.IPs.Add(new IP()
-        {
-            IPAddress = "218.200.6.4",
-            Reports = new List<Report>()
+            Category hackingCategory = new Category()
             {
-                new Report()
+                Name = "Hacking"
+            };
+            Category bruteCategory = new Category()
+            {
+                Name = "Brute force"
+            };
+            Category ddosCategory = new Category()
+            {
+                Name = "DDoS"
+            };
+            Category portScanningCategory = new Category()
+            {
+                Name = "Port scanning"
+            };
+            Category botCategory = new Category()
+            {
+                Name = "Bot"
+            };
+            Category otherCategory = new Category()
+            {
+                Name = "Other"
+            };
+
+            context.Categories.Add(hackingCategory);
+            context.Categories.Add(bruteCategory);
+            context.Categories.Add(ddosCategory);
+            context.Categories.Add(portScanningCategory);
+            context.Categories.Add(botCategory);
+            context.Categories.Add(otherCategory);
+
+            Category[] categories = new Category[]
+            {
+                hackingCategory,
+                bruteCategory,
+                ddosCategory,
+                portScanningCategory,
+                botCategory,
+                otherCategory
+            };
+
+            Func<Task<Report>> generateReportAsync = async () => await Task.Run(() =>
+            {
+                Report report = new Report()
                 {
-                    DateTime = DateTime.Now.AddDays(-5),
-                    Categories = new List<Category>()
-                    {
-                        hackingCategory,
-                        bruteCategory
-                    },
-                    Comment = "Tentative d'intrusion par brute force sur RDP."
-                },
-                new Report()
+                    DateTime = DateTime.Now.AddDays(rnd.NextDouble() * -1 * rnd.Next(0, 365)),
+                };
+
+                for (int i = 0; i < rnd.Next(0, 3); i++)
                 {
-                    DateTime = DateTime.Now.AddDays(-7),
-                    Categories = new List<Category>()
+                    Category cat = categories[rnd.Next(0, categories.Length - 1)];
+
+                    if (report.Categories.Contains(cat) == false)
                     {
-                        botCategory,
-                        portScanningCategory
-                    }
-                },
-                new Report()
-                {
-                    DateTime = DateTime.Now.AddDays(-12),
-                    Categories = new List<Category>()
-                    {
-                        botCategory,
-                        portScanningCategory
-                    }
-                },
-                new Report()
-                {
-                    DateTime = DateTime.Now.AddDays(-14),
-                    Categories = new List<Category>()
-                    {
-                        botCategory,
-                        portScanningCategory
-                    }
-                },
-                new Report()
-                {
-                    DateTime = DateTime.Now.AddDays(-16),
-                    Categories = new List<Category>()
-                    {
-                        botCategory,
-                        portScanningCategory
-                    }
-                },
-                new Report()
-                {
-                    DateTime = DateTime.Now.AddDays(-30),
-                    Categories = new List<Category>()
-                    {
-                        botCategory,
-                        portScanningCategory
-                    }
-                },
-                new Report()
-                {
-                    DateTime = DateTime.Now.AddDays(-36),
-                    Categories = new List<Category>()
-                    {
-                        botCategory,
-                        portScanningCategory
-                    }
-                },
-                new Report()
-                {
-                    DateTime = DateTime.Now.AddDays(-40),
-                    Categories = new List<Category>()
-                    {
-                        botCategory,
-                        portScanningCategory
+                        report.Categories.Add(cat);
                     }
                 }
-            }
-        });
 
+                return report;
+            });
 
-        context.SaveChanges();
+            Func<int, Task<List<Report>>> generateReportsAsync = async (count) => await Task.Run(() => Enumerable.Range(0, count).Select(async i => await generateReportAsync()).Select(t => t.Result).ToList());
+
+            Func<Task<IP>> generateIpAsync = async () =>
+            {
+                return await Task.Run(async () =>
+                {
+                    IP ip = new IP()
+                    {
+                        IPAddress = $"{rnd.Next(1, 254)}.{rnd.Next(1, 254)}.{rnd.Next(1, 254)}.{rnd.Next(1, 254)}"
+                    };
+
+                    ip.Reports = await generateReportsAsync(rnd.Next(1, 100));
+
+                    return ip;
+                });
+            };
+
+            Func<int, List<IP>> generateIps = (count) => Enumerable.Range(0, count).Select(async i => await generateIpAsync()).Select(t => t.Result).ToList();
+
+            context.IPs.AddRange(generateIps(300));
+
+            context.SaveChanges();
+        }
+        
+        #endregion
     }
-    #endregion
 }
 
 app.UseHttpsRedirection();
