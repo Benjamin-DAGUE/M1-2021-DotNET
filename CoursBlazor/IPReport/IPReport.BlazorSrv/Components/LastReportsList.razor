@@ -4,8 +4,11 @@
         <TableHeader>
             <TableRow>
                 <TableHeaderCell>Date et heure</TableHeaderCell>
-                <TableHeaderCell>IP</TableHeaderCell>
-                <TableHeaderCell>Subnet</TableHeaderCell>
+                @if(Ip == null)
+                {
+                    <TableHeaderCell>IP</TableHeaderCell>
+                    <TableHeaderCell>Subnet</TableHeaderCell>
+                }
                 <TableHeaderCell>Catégories</TableHeaderCell>
                 <TableHeaderCell>Commentaire</TableHeaderCell>
             </TableRow>
@@ -15,12 +18,15 @@
             {
                 <TableRow @key="@report">
                     <TableRowHeader>@report.DateTime</TableRowHeader>
-                    <TableRowCell>
-                        <a href=@($"/ip/{HttpUtility.UrlEncode(report.IP.IPAddress?.Replace(".", "_"))}")>@report.IP.IPAddress</a>
-                    </TableRowCell>
-                    <TableRowCell>
-                        <a href=@($"/subnet/{HttpUtility.UrlEncode(report.IP.IPSubnet?.Replace(".", "_"))}")>@report.IP.IPSubnet</a>
-                    </TableRowCell>
+                    @if (Ip == null)
+                    {
+                        <TableRowCell>
+                            <a href=@($"/ip/{HttpUtility.UrlEncode(report.IP.IPAddress?.Replace(".", "_"))}")>@report.IP.IPAddress</a>
+                        </TableRowCell>
+                        <TableRowCell>
+                            <a href=@($"/subnet/{HttpUtility.UrlEncode(report.IP.IPSubnet?.Replace(".", "_"))}")>@report.IP.IPSubnet</a>
+                        </TableRowCell>
+                    }
                     <TableRowCell>
                         @foreach (Category category in report.Categories.OrderBy(c => c.Name))
                         {
