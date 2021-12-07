@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using System.Text.RegularExpressions;
 
 namespace IPReport.BlazorSrv.Components;
 
@@ -10,6 +12,12 @@ namespace IPReport.BlazorSrv.Components;
 public partial class Checker
 {
     #region Properties
+
+    /// <summary>
+    ///     Obtient ou définit le gestionnaire de navigation.
+    /// </summary>
+    [Inject]
+    private NavigationManager? NavigationManager { get; set; }
 
     /// <summary>
     ///     Obtient ou définit l'adresse IP à tester.
@@ -36,6 +44,19 @@ public partial class Checker
         IpToCheck = ipToCheck;
         //L'expression régulière suivante vérifie si l'adresse IP est valide (IP ou subnet).
         IsValid = Regex.IsMatch(ipToCheck, @"^(?>\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(?>\.(?>25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}(?>/24)?$");
+    }
+
+    private void OnKeyPressed(KeyboardEventArgs kbd)
+    {
+        if (NavigationManager == null)
+        {
+            throw new Exception($"Le service {nameof(NavigationManager)} n'est pas initialisé");
+        }
+
+        if (kbd.Key?.ToLower() == "enter" && IsValid)
+        {
+            NavigationManager.NavigateTo($"/{(IpToCheck?.EndsWith("/24") == true ? "subnet" : "ip")}/{System.Web.HttpUtility.UrlEncode(IpToCheck)}", false);
+        }
     }
 
     #endregion

@@ -1,7 +1,9 @@
 ﻿<Row Gutter="(0, 0)">
     <Column ColumnSize="ColumnSize.Is12.OnTablet.Is4.OnDesktop.Is12.OnMobile">
         @*La valeur saisie est récupérée via le callback TextChanged*@
-        <TextEdit Placeholder="Saisir une adresse IPV4 a.b.c.d ou un subnet a.b.c.d/24" TextChanged=IpToCheckChanged/>
+        <TextEdit Placeholder="Saisir une adresse IPV4 a.b.c.d ou un subnet a.b.c.d/24"
+                  TextChanged=IpToCheckChanged
+                  KeyPress=OnKeyPressed/>
     </Column>
     <Column ColumnSize="ColumnSize.Is12.OnTablet.Is2.OnDesktop.Is12.OnMobile" >
         @*Le bouton est désactivé si la saisie est invalide*@
