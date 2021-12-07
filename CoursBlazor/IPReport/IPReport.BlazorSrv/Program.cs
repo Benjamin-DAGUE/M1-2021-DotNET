@@ -36,7 +36,7 @@ if (!app.Environment.IsDevelopment())
 }
 else
 {
-    bool generateFakeData = true;
+    bool generateFakeData = false;
 
     if (generateFakeData == true)
     {
@@ -121,7 +121,7 @@ else
                 {
                     IP ip = new IP()
                     {
-                        IPAddress = $"{rnd.Next(1, 254)}.{rnd.Next(1, 254)}.{rnd.Next(1, 254)}.{rnd.Next(1, 254)}"
+                        IPAddress = $"{rnd.Next(200, 201)}.{rnd.Next(112, 113)}.{rnd.Next(1, 254)}.{rnd.Next(1, 254)}"
                     };
 
                     ip.Reports = await generateReportsAsync(rnd.Next(1, 100));
@@ -132,7 +132,7 @@ else
 
             Func<int, List<IP>> generateIps = (count) => Enumerable.Range(0, count).Select(async i => await generateIpAsync()).Select(t => t.Result).ToList();
 
-            context.IPs.AddRange(generateIps(300));
+            context.IPs.AddRange(generateIps(200));
 
             context.SaveChanges();
         }
