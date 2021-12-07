@@ -59,7 +59,7 @@ public partial class LastReportsList
         }
 
         //Chargement des données.
-        Reports = (await ReportsDataService.GetLastReportsAsync(Ip)).ToList();
+        Reports = await ReportsDataService.GetLastReportsAsync(Ip);
 
         //Indique au composant parent le nombre d'éléments chargés.
         await ItemsCountChanged.InvokeAsync(Reports.Count);

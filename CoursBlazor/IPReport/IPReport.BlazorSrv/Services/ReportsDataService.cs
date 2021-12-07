@@ -39,7 +39,7 @@ public class ReportsDataService
     /// <param name="count">Nombre de rapport à récupérer, 20 par défaut.</param>
     /// <param name="ip">IP pour laquelle il faut récupérer les derniers rapports.</param>
     /// <returns>Retourne les derniers rapports d'abus.</returns>
-    public async Task<IEnumerable<Report>> GetLastReportsAsync(IP? ip = null, int count = 20) => await _Context
+    public async Task<List<Report>> GetLastReportsAsync(IP? ip = null, int count = 20) => await _Context
         .Reports
         .Include(r => r.IP)
         .Include(r => r.Categories)
