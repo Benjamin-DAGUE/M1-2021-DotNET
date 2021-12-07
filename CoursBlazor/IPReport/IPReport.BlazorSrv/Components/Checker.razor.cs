@@ -46,6 +46,12 @@ public partial class Checker
         IsValid = Regex.IsMatch(ipToCheck, @"^(?>\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(?>\.(?>25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}(?>/24)?$");
     }
 
+    /// <summary>
+    ///     Méthode déclenchée lorsque l'utilisateur appui sur une touche du clavier dans la zone de saisie.
+    ///     Cette méthode est utilisée pour capter la touche "Enter" et valider la navigation.
+    /// </summary>
+    /// <param name="kbd">Arguments de l'événement.</param>
+    /// <exception cref="Exception">Une exception peut être levée si l'injection de dépendance de <see cref="NavigationManager"/> n'est pas réalisée.</exception>
     private void OnKeyPressed(KeyboardEventArgs kbd)
     {
         if (NavigationManager == null)
