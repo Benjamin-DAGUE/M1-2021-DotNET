@@ -49,9 +49,41 @@
             <p style="color:red">@randomNumber</p>
         </Column>
     </Row>
+
+    <Row>
+        <Button Color="Color.Primary" Clicked="@TestDatabase">Test</Button>
+    </Row>
+
 </Container>
 
 
 @code {
     private int randomNumber = 0;
+
+    private void TestDatabase()
+    {
+        //Création du contexte pour se connecter à la base de données
+        using (DataContext context = new DataContext())
+        {
+            //Créer la base de données si elle n'existe pas.
+            context.Database.EnsureCreated();
+            //Recherche dans la base de données de l'IP "192.168.1.1"
+            IpAddress? ipAddress = context.IpAddresses.FirstOrDefault(ip => ip.Address == "192.168.1.1");
+
+            if(ipAddress == null)
+            {
+                //Création de l'IP si elle n'existe pas 
+                ipAddress = new IpAddress()
+                {
+                    Address = "192.168.1.1"
+                };
+
+                //Ajout de l'IP dans le jeux de données.
+                context.IpAddresses.Add(ipAddress);
+                //Sauvegarde des modifications
+                context.SaveChanges();
+            }
+
+        }
+    }
 }
