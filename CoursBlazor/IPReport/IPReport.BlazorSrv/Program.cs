@@ -22,6 +22,7 @@ builder.Services.AddBlazorise(options =>
 builder.Services.AddDbContext<IPReportContext>(options => options.UseSqlite(@"Data Source=.\bin\ipreport.db;"));
 builder.Services.AddTransient<ReportsDataService>();
 builder.Services.AddTransient<IpsDataService>();
+builder.Services.AddTransient<CategoriesDataService>();
 
 #endregion
 

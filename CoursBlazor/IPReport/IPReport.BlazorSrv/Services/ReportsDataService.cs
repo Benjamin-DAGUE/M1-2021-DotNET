@@ -1,5 +1,6 @@
 ﻿using IPReport.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace IPReport.BlazorSrv.Services;
 
@@ -15,6 +16,11 @@ public class ReportsDataService
     /// </summary>
     private readonly IPReportContext _Context;
 
+    /// <summary>
+    ///     Service de données pour les IP.
+    /// </summary>
+    private readonly IpsDataService _IpsDataService;
+
     #endregion
 
     #region Constructors
@@ -24,9 +30,10 @@ public class ReportsDataService
     /// </summary>
     /// <param name="context">Contexte de données à utiliser.</param>
     /// <exception cref="ArgumentNullException">Exception déclenchée si un argument obligatoire n'est pas fourni.</exception>
-    public ReportsDataService(IPReportContext context)
+    public ReportsDataService(IPReportContext context, IpsDataService ipsDataService)
     {
         _Context = context ?? throw new ArgumentNullException(nameof(context));
+        _IpsDataService = ipsDataService ?? throw new ArgumentNullException(nameof(ipsDataService));
     }
 
     #endregion
@@ -47,6 +54,36 @@ public class ReportsDataService
         .OrderByDescending(r => r.DateTime)
         .Take(count)
         .ToListAsync();
+
+    /// <summary>
+    ///     Ajoute des rapports de manière asynchrone.
+    /// </summary>
+    /// <param name="reports">Rapports à ajouter.</param>
+    /// <returns>Tâche pouvant être attendue.</returns>
+    /// <exception cref="Exception">Peut être levée si le rapport n'a pas d'adresse IP valide associée.</exception>
+    public async Task AddReportsAsync(params Report[] reports)
+    {
+        foreach (Report report in reports)
+        {
+            if (report.IP == null)
+            {
+                throw new Exception("Impossible d'ajouter un rapport sans adresse IP.");
+            }
+
+            IP ip = await _IpsDataService.GetIpAsync(report.IP.Id) ?? await _IpsDataService.GetIpAsync(report.IP.IPAddress) ?? report.IP;
+
+            if (Regex.IsMatch(ip.IPAddress, @"^(?>\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(?>\.(?>25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$") == false)
+            {
+                throw new Exception("Le format de l'adresse IP n'est pas valide.");
+            }
+
+            report.IP = ip;
+
+            _Context.Reports.Add(report);
+        }
+
+        _Context.SaveChanges();
+    }
 
     #endregion
 }

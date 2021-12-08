@@ -1,3 +1,68 @@
 ﻿@page "/report"
 
 <PageTitle>IP Report - Rapport</PageTitle>
+
+<Container Fluid>
+
+    @if (Categories != null)
+    {
+        <Row>
+            <Heading Size=HeadingSize.Is1>Faire un rapport d'abus</Heading>
+        </Row>
+        <Row>
+
+            <Field>
+                <FieldLabel>Adresse IP</FieldLabel>
+                @*
+                    On utilise pas bind-Text mais bien l'événement TextChanged pour pouvoir appeler UpdateIsFormValid qui test la validité de la saisie des adresses IP.
+                    On est obligé de faire comme ça car bind-Text utilise TextChanged, on ne peut pas avoir les deux...
+                *@
+                <TextEdit Placeholder="Entrez une adresse IP, obligatoire" Text=@IPAddresses TextChanged=@((txt) => { IPAddresses = txt; UpdateIsFormValid(); })>
+                    <FieldHelp>Vous pouvez entrer plusieurs adresses séparées par un ;</FieldHelp>
+                </TextEdit>
+            </Field>
+
+            <Field>
+                <FieldLabel>Date et heure</FieldLabel>
+                @*
+                    On utilise pas bind-Date mais Date et DateChanged car la page détermine que ReportDateTime est non nullable alors que le paramètre Date du composant DateEdit est nullable.
+                    Cette incompatibilitée est traitée dans le DateChanged (si DateEdit.Date est null, on affecte la date et heure actuelle)
+                *@
+                <DateEdit TValue="DateTime?" InputMode="DateInputMode.DateTime" Date=@ReportDateTime DateChanged=@((date) => ReportDateTime = date ?? DateTime.Now)>
+                    <FieldHelp>Date à laquelle l'abus a eu lieu.</FieldHelp>
+                </DateEdit>
+            </Field>
+
+            <Field>
+                <FieldLabel>Catégories</FieldLabel>
+
+                <Autocomplete TItem="Category"
+                          TValue="Category"
+                          Data="@Categories"
+                          TextField="@((item) => item.Name)"
+                          ValueField="@((item) => item)"
+                          Placeholder="Rechercher..."
+                          Multiple
+                          @bind-SelectedValues="SelectedCategories"
+                          @bind-SelectedTexts="SelectedNameCategories">
+                </Autocomplete>
+                <FieldHelp>Facultatif. Catégories disponibles : @string.Join(", ", Categories.Select(c => c.Name).OrderBy(c => c))</FieldHelp>
+            </Field>
+
+            <Field>
+                <FieldLabel>Commentaire</FieldLabel>
+                <TextEdit Placeholder="Entrez un commentaire" @bind-Text=@ReportComment>
+                    <FieldHelp>Facultatif</FieldHelp>
+                </TextEdit>
+            </Field>
+
+            <Button Disabled=@(IsFormValid == false) Clicked=ValidateFormButtonClickedAsync Color=Color.Primary>Valider</Button>
+
+        </Row>
+    }
+    else
+    {
+        <p>Chargement...</p>
+    }
+
+</Container>
