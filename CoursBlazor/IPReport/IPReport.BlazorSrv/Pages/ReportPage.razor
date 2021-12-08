@@ -28,7 +28,7 @@
                     On utilise pas bind-Date mais Date et DateChanged car la page détermine que ReportDateTime est non nullable alors que le paramètre Date du composant DateEdit est nullable.
                     Cette incompatibilitée est traitée dans le DateChanged (si DateEdit.Date est null, on affecte la date et heure actuelle)
                 *@
-                <DateEdit TValue="DateTime?" InputMode="DateInputMode.DateTime" Date=@ReportDateTime DateChanged=@((date) => ReportDateTime = date ?? DateTime.Now)>
+                <DateEdit TValue="DateTime" InputMode="DateInputMode.DateTime" @bind-Date=@ReportDateTime>
                     <FieldHelp>Date à laquelle l'abus a eu lieu.</FieldHelp>
                 </DateEdit>
             </Field>
