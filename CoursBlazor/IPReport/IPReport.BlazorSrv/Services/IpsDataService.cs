@@ -63,5 +63,28 @@ public class IpsDataService
             .ToListAsync();
     }
 
+    public async Task<int> CountIpWithReportOverPeriod(double periodDurationInHours)
+    {
+        DateTime dt = DateTime.Now.AddHours(Math.Abs(periodDurationInHours) * -1);
+
+        return await _Context.Reports.Where(r => r.DateTime >= dt).Select(r => r.IPId).Distinct().CountAsync();
+    }
+
+    public async Task<List<IP>> GetTopReportedIpsOverPeriod(double periodDurationInHours)
+    {
+        DateTime dt = DateTime.Now.AddHours(Math.Abs(periodDurationInHours) * -1);
+
+        return (await _Context
+            .Reports
+            .Include(r => r.IP)
+            .Where(r => r.DateTime >= dt)
+            .ToListAsync())
+            .GroupBy(r => r.IP)
+            .OrderByDescending(g => g.Count())
+            .Take(5)
+            .Select(g => g.Key)
+            .ToList();
+    }
+
     #endregion
 }

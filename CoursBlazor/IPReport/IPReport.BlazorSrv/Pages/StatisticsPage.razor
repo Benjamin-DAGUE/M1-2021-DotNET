@@ -1,3 +1,63 @@
 ﻿@page "/statistics"
 
 <PageTitle>IP Report - Statistiques</PageTitle>
+
+<Container Fluid TextAlignment=TextAlignment.Center>
+
+    <Row>
+        <Heading Size=HeadingSize.Is1>Nombre d'adresses avec un rapport depuis...</Heading>
+    </Row>
+
+    <Row >
+        <Column>
+            <CounterForPeriod PeriodDurationInHours=1 PeriodString="1 heure"/>
+        </Column>
+        <Column>
+            <CounterForPeriod PeriodDurationInHours=24 PeriodString="24 heures"/>
+        </Column>
+        <Column>
+            <CounterForPeriod PeriodDurationInHours=168 PeriodString="7 jours"/>
+        </Column>
+        <Column>
+            <CounterForPeriod PeriodDurationInHours=720 PeriodString="30 jours"/>
+        </Column>
+    </Row>
+
+    <Row>
+        <Heading Size=HeadingSize.Is1>Répartition par catégorie depuis...</Heading>
+    </Row>
+    <Row>
+        <Column>
+            <ReportsPerCategoriesForPeriod PeriodDurationInHours=1 PeriodString="1 heure"/>
+        </Column>
+        <Column>
+            <ReportsPerCategoriesForPeriod PeriodDurationInHours=24 PeriodString="24 heures"/>
+        </Column>
+        <Column>
+            <ReportsPerCategoriesForPeriod PeriodDurationInHours=168 PeriodString="7 jours"/>
+        </Column>
+        <Column>
+            <ReportsPerCategoriesForPeriod PeriodDurationInHours=720 PeriodString="30 jours"/>
+        </Column>
+    </Row>
+
+    <Row>
+        <Heading Size=HeadingSize.Is1>5 adresses les plus reportés depuis...</Heading>
+    </Row>
+
+    <Row>
+        <Column>
+            <TopAddressesForPeriod PeriodDurationInHours=1 PeriodString="1 heure"/>
+        </Column>
+        <Column>
+            <TopAddressesForPeriod PeriodDurationInHours=24 PeriodString="24 heures"/>
+        </Column>
+        <Column>
+            <TopAddressesForPeriod PeriodDurationInHours=168 PeriodString="7 jours"/>
+        </Column>
+        <Column>
+            <TopAddressesForPeriod PeriodDurationInHours=720 PeriodString="30 jours"/>
+        </Column>
+    </Row>
+
+</Container>

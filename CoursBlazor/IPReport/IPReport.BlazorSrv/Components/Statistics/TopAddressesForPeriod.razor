@@ -1,0 +1,9 @@
+﻿@inherits StatisticsForPeriodBase
+
+@foreach (IP ip in Addresses.OrderByDescending(ip => ip.Reports.Count))
+{
+    <span><a href=@($"/ip/{HttpUtility.UrlEncode(ip.IPAddress?.Replace(".", "_"))}")>@ip.IPAddress</a> (@ip.Reports.Count)</span>
+    <br/>
+}
+<br/>
+<Text TextWeight=TextWeight.Bold>@PeriodString</Text>

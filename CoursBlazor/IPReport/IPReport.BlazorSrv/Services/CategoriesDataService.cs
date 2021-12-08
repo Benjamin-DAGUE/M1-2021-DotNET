@@ -37,7 +37,21 @@ public class CategoriesDataService
     ///     Obtient l'ensemble des catégories existantes.
     /// </summary>
     /// <returns>Liste des catégories.</returns>
-    public async Task<List<Category>> GetCategories() => await _Context.Categories.ToListAsync();
+    public async Task<List<Category>> GetCategories() => await _Context.Categories.OrderBy(c => c.Name).ToListAsync();
+
+    public async Task<List<int>> CountReportsForCategoriesOverPeriod(double periodDurationInHours)
+    {
+        DateTime dt = DateTime.Now.AddHours(Math.Abs(periodDurationInHours) * -1);
+
+        List<int> results = new List<int>();
+
+        foreach (Category category in await GetCategories())
+        {
+            results.Add(await _Context.Reports.Where(r => r.Categories.Contains(category) && r.DateTime >= dt).CountAsync());
+        }
+
+        return results;
+    }
 
     #endregion
 }
