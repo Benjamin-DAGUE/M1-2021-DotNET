@@ -45,7 +45,7 @@ public class IpsDataService
     /// </summary>
     /// <param name="ipAddress">Identifiant de l'IP à récupérer.</param>
     /// <returns>Retour l'IP à l'identifiant associé ou null.</returns>
-    public async Task<IP?> GetIpAsync(string ipAddress) => await _Context.IPs.FirstOrDefaultAsync(i => i.IPAddress == ipAddress);
+    public async Task<IP?> GetIpAsync(string ipAddress) => await _Context.IPs.AsNoTracking().FirstOrDefaultAsync(i => i.IPAddress == ipAddress);
 
     /// <summary>
     ///     Obtient l'ensemble des adresses IP avec un rapport dans le sous-réseau spécifié.
@@ -56,6 +56,7 @@ public class IpsDataService
     {
         subnet = subnet[0..(subnet.LastIndexOf('.') + 1)];
         return await _Context.IPs
+            .AsNoTracking()
             .Include(i => i.Reports)
             .ThenInclude(r => r.Categories)
             .Where(ip => ip.IPAddress.StartsWith(subnet))

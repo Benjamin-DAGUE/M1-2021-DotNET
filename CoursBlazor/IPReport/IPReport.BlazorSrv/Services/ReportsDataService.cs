@@ -48,6 +48,7 @@ public class ReportsDataService
     /// <returns>Retourne les derniers rapports d'abus.</returns>
     public async Task<List<Report>> GetLastReportsAsync(IP? ip = null, int count = 20) => await _Context
         .Reports
+        .AsNoTracking() //AsNoTracking permet d'indiquer au contexte de données qu'il ne doit pas "suivre" les objets retournés (nécessaire pour la détection automatique des modifications lors du SaveChanges). Ceci a pour effet de ne pas mettre dans un cache local les objets chargés ainsi que de forcer le contexte à ne pas lire dans le cache pour l'exécution de cette requête.
         .Include(r => r.IP)
         .Include(r => r.Categories)
         .Where(r => ip == null || r.IPId == ip.Id)
